@@ -1,11 +1,17 @@
 import { TOrder } from './orderInterface';
-import { OrderModel } from './orderModel';
+import { Order } from './orderModel';
 
 const createOrderIntoDB = async (orderedProduct: TOrder) => {
-  const result = OrderModel.create(orderedProduct);
+  const result = Order.create(orderedProduct);
+  return result;
+};
+
+const getAllOrdersFromDB = async () => {
+  const result = Order.find();
   return result;
 };
 
 export const orderServices = {
   createOrderIntoDB,
+  getAllOrdersFromDB,
 };
