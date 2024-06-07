@@ -1,2 +1,2 @@
 var f = 32542;
-console.log(f);
+// console.log(f);
