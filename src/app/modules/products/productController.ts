@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ProductServices } from './productService';
 import ProductValidationSchema from './productValidation';
+import { Product } from './productModel';
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -27,7 +28,20 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const result = await ProductServices.getAllProductsFromDB();
+    const { searchTerm } = req.query;
+    let result;
+    if (searchTerm) {
+      result = await Product.find({
+        $or: [
+          { name: new RegExp(searchTerm as string, 'i') },
+          { description: new RegExp(searchTerm as string, 'i') },
+          { category: new RegExp(searchTerm as string, 'i') },
+          { tags: new RegExp(searchTerm as string, 'i') },
+        ],
+      });
+    } else {
+      result = await ProductServices.getAllProductsFromDB();
+    }
 
     res.status(200).json({
       success: true,
@@ -54,8 +68,44 @@ const getSingleProduct = async (req: Request, res: Response) => {
   }
 };
 
+const deleteSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+    const result = await ProductServices.deleteSingleProductFromDB(productId);
+
+    res.status(200).json({
+      success: true,
+      message: `Product with id ${productId} deleted successfully!`,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = req.params.id;
+    const { updatedData } = req.body;
+    const result = await ProductServices.updateProductInDB(
+      productId,
+      updatedData,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: `product with id ${productId} has been updated successfully`,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const ProductController = {
   createProduct,
   getAllProducts,
   getSingleProduct,
+  deleteSingleProduct,
+  updateSingleProduct,
 };
