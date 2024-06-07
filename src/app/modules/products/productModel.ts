@@ -27,8 +27,8 @@ const productSchema = new Schema<TProduct, ProductModel>({
 });
 
 productSchema.statics.doesProductExist = async function (name: string) {
-  const existingUser = await Product.findOne({ name });
-  return existingUser;
+  const existingProduct = await Product.findOne({ name });
+  return existingProduct;
 };
 
 export const Product = model<TProduct, ProductModel>('Product', productSchema);

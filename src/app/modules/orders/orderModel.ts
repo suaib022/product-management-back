@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TOrder } from './orderInterface';
+import { OrderModel, TOrder } from './orderInterface';
 
 const orderSchema = new Schema<TOrder>({
   email: { type: String, required: true },
@@ -8,4 +8,18 @@ const orderSchema = new Schema<TOrder>({
   quantity: { type: Number, required: true },
 });
 
-export const Order = model<TOrder>('Order', orderSchema);
+orderSchema.statics.doesOrderExist = async function (productId: string) {
+  const existingOrder = await Order.findOne({ productId });
+  return existingOrder;
+};
+
+export const Order = model<TOrder, OrderModel>('Order', orderSchema);
+
+/**
+ * productSchema.statics.doesProductExist = async function (name: string) {
+  const existingUser = await Product.findOne({ name });
+  return existingUser;
+};
+
+export const Product = model<TProduct, ProductModel>('Product', productSchema);
+ */

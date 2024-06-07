@@ -5,6 +5,8 @@ import { Order } from './orderModel';
 const createOrder = async (req: Request, res: Response) => {
   try {
     const { orderedProduct } = req.body;
+    // console.log(orderedProduct.quantity);
+
     const result = await orderServices.createOrderIntoDB(orderedProduct);
 
     res.status(200).json({
