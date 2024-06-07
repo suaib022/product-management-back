@@ -1,19 +1,25 @@
-export type Variant = {
+import { Model } from 'mongoose';
+
+export type TVariant = {
   type: string;
   value: string;
 };
 
-export type Inventory = {
+export type TInventory = {
   quantity: number;
-  inStock: true;
+  inStock: boolean;
 };
 
-export type Product = {
+export type TProduct = {
   name: string;
   description: string;
   price: number;
   category: string;
   tags: string[];
-  variants: Variant[];
-  inventory: Inventory;
+  variants: TVariant[];
+  inventory: TInventory;
 };
+
+export interface ProductModel extends Model<TProduct> {
+  doesProductExist(name: string): Promise<TProduct | null>;
+}
