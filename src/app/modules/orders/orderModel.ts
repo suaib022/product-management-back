@@ -14,12 +14,3 @@ orderSchema.statics.doesOrderExist = async function (productId: string) {
 };
 
 export const Order = model<TOrder, OrderModel>('Order', orderSchema);
-
-/**
- * productSchema.statics.doesProductExist = async function (name: string) {
-  const existingUser = await Product.findOne({ name });
-  return existingUser;
-};
-
-export const Product = model<TProduct, ProductModel>('Product', productSchema);
- */

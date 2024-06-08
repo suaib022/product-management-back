@@ -14,7 +14,7 @@ const createProduct = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'Product Added Successfully!',
+      message: 'Product created Successfully!',
       data: result,
     });
   } catch (err: any) {
@@ -30,6 +30,7 @@ const getAllProducts = async (req: Request, res: Response) => {
   try {
     const { searchTerm } = req.query;
     let result;
+    //checking if searchTerm exists
     if (searchTerm) {
       result = await Product.find({
         $or: [
@@ -45,11 +46,17 @@ const getAllProducts = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'Products retrieved successfully!',
+      message: searchTerm
+        ? `Products matching search term ${searchTerm} fetched successfully!`
+        : 'Products fetched successfully!',
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Products Not Found!',
+      error: err,
+    });
   }
 };
 
@@ -60,11 +67,15 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: `Product with id ${productId} retrieved successfully!`,
+      message: `Product with id ${productId} fetched successfully!`,
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Product Not Found!',
+      error: err,
+    });
   }
 };
 
@@ -79,7 +90,11 @@ const deleteSingleProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(200).json({
+      success: false,
+      message: 'Something Went Wrong!',
+      error: err,
+    });
   }
 };
 
@@ -95,10 +110,14 @@ const updateSingleProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: `product with id ${productId} has been updated successfully`,
-      data: result,
+      data: [result, updatedData],
     });
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    res.status(200).json({
+      success: false,
+      message: err.message || 'Something Went Wrong!',
+      error: err,
+    });
   }
 };
 

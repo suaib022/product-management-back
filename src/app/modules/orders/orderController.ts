@@ -1,22 +1,23 @@
 import { Request, Response } from 'express';
 import { orderServices } from './orderService';
 import { Order } from './orderModel';
+import OrderValidationSchema from './orderValidation';
 
 const createOrder = async (req: Request, res: Response) => {
   try {
     const { orderedProduct } = req.body;
-    // console.log(orderedProduct.quantity);
+    //orderData validation using zod
+    const zodParsedData = OrderValidationSchema.parse(orderedProduct);
 
-    const result = await orderServices.createOrderIntoDB(orderedProduct);
-    console.log(result);
+    const result = await orderServices.createOrderIntoDB(zodParsedData);
 
     res.status(200).json({
       success: true,
-      message: 'Item ordered successfully!!',
+      message: 'Order created successfully!',
       data: result,
     });
   } catch (err: err) {
-    res.status(200).json({
+    res.status(500).json({
       success: false,
       message: err.message || 'Something Went Wrong!',
       error: err,
@@ -26,8 +27,10 @@ const createOrder = async (req: Request, res: Response) => {
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {
+    //searchTerm for orderDB
     const { email } = req.query;
     let result;
+    //procedure if searchTerm exists
     if (email) {
       result = await Order.find({
         $or: [{ email: new RegExp(email as string, 'i') }],
@@ -38,11 +41,17 @@ const getAllOrders = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'orders retrieved successfully!',
+      message: email
+        ? `Orders fetched successfully for user email : ${email}`
+        : 'orders fetched successfully!',
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'Order not found!',
+      error: err,
+    });
   }
 };
 
