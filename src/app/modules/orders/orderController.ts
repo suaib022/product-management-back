@@ -8,14 +8,19 @@ const createOrder = async (req: Request, res: Response) => {
     // console.log(orderedProduct.quantity);
 
     const result = await orderServices.createOrderIntoDB(orderedProduct);
+    console.log(result);
 
     res.status(200).json({
       success: true,
-      message: 'Item ordered successfully!',
+      message: 'Item ordered successfully!!',
       data: result,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (err: err) {
+    res.status(200).json({
+      success: false,
+      message: err.message || 'Something Went Wrong!',
+      error: err,
+    });
   }
 };
 

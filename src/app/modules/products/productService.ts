@@ -2,12 +2,22 @@ import { TProduct } from './productInterface';
 import { Product } from './productModel';
 
 const createProductIntoDB = async (productData: TProduct) => {
-  if (await Product.doesProductExist(productData?.name)) {
-    throw new Error('Item already exists!');
+  const existingProduct = await Product.doesProductExist(productData.name);
+  if (existingProduct) {
+    existingProduct.inventory.quantity += productData.inventory.quantity;
+    await existingProduct.save();
+    if (existingProduct.inventory.quantity > 0) {
+      existingProduct.inventory.inStock = true;
+      await existingProduct.save();
+    }
+    // throw new Error('Item already exists!');
+    console.log('e', existingProduct.inventory.quantity);
+    console.log('p', productData.inventory.quantity);
+    return existingProduct;
+  } else {
+    const result = await Product.create(productData);
+    return result;
   }
-
-  const result = await Product.create(productData);
-  return result;
 };
 
 const getAllProductsFromDB = async () => {
