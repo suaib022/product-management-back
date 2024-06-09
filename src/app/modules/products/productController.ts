@@ -5,7 +5,7 @@ import { Product } from './productModel';
 
 const createProduct = async (req: Request, res: Response) => {
   try {
-    const { productData } = req.body;
+    const productData = req.body;
 
     //zod validation
     const zodParsedData = ProductValidationSchema.parse(productData);
@@ -62,7 +62,7 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
-    const productId = req.params.id;
+    const productId = req.params.productId;
     const result = await ProductServices.getSingleProductFromDB(productId);
 
     res.status(200).json({
@@ -81,7 +81,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
 const deleteSingleProduct = async (req: Request, res: Response) => {
   try {
-    const productId = req.params.id;
+    const productId = req.params.productId;
     const result = await ProductServices.deleteSingleProductFromDB(productId);
 
     res.status(200).json({
@@ -100,8 +100,8 @@ const deleteSingleProduct = async (req: Request, res: Response) => {
 
 const updateSingleProduct = async (req: Request, res: Response) => {
   try {
-    const productId = req.params.id;
-    const { updatedData } = req.body;
+    const productId = req.params.productId;
+    const updatedData = req.body;
     const result = await ProductServices.updateProductInDB(
       productId,
       updatedData,
