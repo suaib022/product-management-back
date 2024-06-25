@@ -26,11 +26,11 @@ const createOrderIntoDB = async (orderedProduct: TOrder) => {
       existingOrder.quantity += orderedProduct.quantity;
       await existingOrder.save();
       //decreasing products quantity and saving into productDB
-      existingOrderedProduct?.inventory?.quantity -= orderedProduct.quantity;
+      existingOrderedProduct.inventory.quantity -= orderedProduct.quantity;
       await existingOrderedProduct?.save();
       //checking if the product gets out of stock after ordering
       if (existingOrderedProduct?.inventory?.quantity <= 0) {
-        existingOrderedProduct?.inventory?.inStock = false;
+        existingOrderedProduct.inventory.inStock = false;
         await existingOrderedProduct?.save();
       }
       return existingOrder;

@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { ProductRoutes } from './app/modules/products/productRoute';
 import { orderRoutes } from './app/modules/orders/orderRoute';
+import rootRoute from './app/Route/rootRoute';
 
 const app: Application = express();
 
@@ -12,9 +13,7 @@ app.use(cors());
 app.use('/api/products', ProductRoutes);
 app.use('/api/orders', orderRoutes);
 
-app.use('/', (req: Request, res: Response) => {
-  res.send('Welcome to the Home Page!');
-});
+app.use('/', rootRoute);
 
 // Error Handling
 app.use((req: Request, res: Response) => {
