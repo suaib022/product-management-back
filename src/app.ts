@@ -1,8 +1,8 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { ProductRoutes } from './app/modules/products/productRoute';
 import { orderRoutes } from './app/modules/orders/orderRoute';
-import rootRoute from './app/Route/rootRoute';
+import notFound from './app/Route/notFound';
 
 const app: Application = express();
 
@@ -13,21 +13,13 @@ app.use(cors());
 app.use('/api/products', ProductRoutes);
 app.use('/api/orders', orderRoutes);
 
-app.use('/', rootRoute);
+const test = (req: Request, res: Response) => {
+  res.send('Welcome to the home page !');
+};
+
+app.get('/', test);
 
 // Error Handling
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route Not Found!',
-  });
-});
-
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || 'Server Error!',
-  });
-});
+app.use(notFound);
 
 export default app;
